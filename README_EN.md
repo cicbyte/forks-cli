@@ -1,5 +1,7 @@
 # forks-cli
 
+![Release](https://img.shields.io/github/v/release/cicbyte/forks-cli?style=flat) ![Go Report Card](https://goreportcard.com/badge/github.com/cicbyte/forks-cli) ![License](https://img.shields.io/github/license/cicbyte/forks-cli) ![Last Commit](https://img.shields.io/github/last-commit/cicbyte/forks-cli)
+
 **[English](#features)** | **[中文](README.md)**
 
 > CLI tool for [Forks](https://github.com/cicbyte/forks) server — accelerated cloning, batch backup, and GitHub Trending browsing

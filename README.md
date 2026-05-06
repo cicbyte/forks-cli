@@ -1,5 +1,7 @@
 # forks-cli
 
+![Release](https://img.shields.io/github/v/release/cicbyte/forks-cli?style=flat) ![Go Report Card](https://goreportcard.com/badge/github.com/cicbyte/forks-cli) ![License](https://img.shields.io/github/license/cicbyte/forks-cli) ![Last Commit](https://img.shields.io/github/last-commit/cicbyte/forks-cli)
+
 **[中文](#功能概览)** | **[English](README_EN.md)**
 
 > Forks 服务端命令行工具 — 镜像加速克隆、批量备份、GitHub Trending 浏览，配合 [Forks](https://github.com/cicbyte/forks) 服务端使用
