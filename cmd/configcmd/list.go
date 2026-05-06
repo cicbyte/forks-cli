@@ -6,6 +6,7 @@ import (
 
 	"github.com/cicbyte/forks-cli/internal/common"
 	"github.com/cicbyte/forks-cli/internal/utils"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 )
 
@@ -22,6 +23,7 @@ var listCmd = &cobra.Command{
 
 type configEntry struct {
 	key       string
+	section   string
 	value     string
 	sensitive bool
 }
@@ -30,39 +32,45 @@ func runList(cmd *cobra.Command, args []string) {
 	cfg := common.AppConfigModel
 
 	entries := []configEntry{
-		// General
-		{key: "server", value: cfg.Server},
-		{key: "token", value: cfg.Token, sensitive: true},
-		{key: "backup_dir", value: cfg.BackupDir},
-		// Log
-		{key: "log.level", value: cfg.Log.Level},
-		{key: "log.max_size", value: strconv.Itoa(cfg.Log.MaxSize)},
-		{key: "log.max_backups", value: strconv.Itoa(cfg.Log.MaxBackups)},
-		{key: "log.max_age", value: strconv.Itoa(cfg.Log.MaxAge)},
-		{key: "log.compress", value: strconv.FormatBool(cfg.Log.Compress)},
+		{key: "server", section: "General", value: cfg.Server},
+		{key: "token", section: "General", value: cfg.Token, sensitive: true},
+		{key: "backup_dir", section: "General", value: cfg.BackupDir},
+		{key: "log.level", section: "Log", value: cfg.Log.Level},
+		{key: "log.max_size", section: "Log", value: strconv.Itoa(cfg.Log.MaxSize)},
+		{key: "log.max_backups", section: "Log", value: strconv.Itoa(cfg.Log.MaxBackups)},
+		{key: "log.max_age", section: "Log", value: strconv.Itoa(cfg.Log.MaxAge)},
+		{key: "log.compress", section: "Log", value: strconv.FormatBool(cfg.Log.Compress)},
+	}
+
+	headers := []string{"KEY", "VALUE"}
+	rows := make([][]string, 0, len(entries))
+	currentSection := ""
+
+	for _, e := range entries {
+		if e.section != currentSection {
+			currentSection = e.section
+			rows = append(rows, []string{fmt.Sprintf("[%s]", currentSection), ""})
+		}
+
+		displayVal := e.value
+		if e.sensitive {
+			displayVal = maskValue(e.value)
+		}
+		if displayVal == "" {
+			displayVal = "(未设置)"
+		}
+		rows = append(rows, []string{e.key, displayVal})
+	}
+
+	t := table.NewWriter()
+	t.SetStyle(table.StyleDefault)
+	t.Style().Options.DrawBorder = false
+	t.Style().Options.SeparateColumns = false
+	t.AppendHeader(table.Row{headers[0], headers[1]})
+	for _, row := range rows {
+		t.AppendRow(table.Row{row[0], row[1]})
 	}
 
 	fmt.Printf("配置文件: %s\n\n", utils.ConfigInstance.GetConfigPath())
-
-	fmt.Println("[General]")
-	for i := 0; i < 3; i++ {
-		printEntry(entries[i])
-	}
-	fmt.Println()
-
-	fmt.Println("[Log]")
-	for i := 3; i < len(entries); i++ {
-		printEntry(entries[i])
-	}
-}
-
-func printEntry(e configEntry) {
-	displayVal := e.value
-	if e.sensitive {
-		displayVal = maskValue(e.value)
-	}
-	if displayVal == "" {
-		displayVal = "(未设置)"
-	}
-	fmt.Printf("  %-16s %s\n", e.key+":", displayVal)
+	fmt.Println(t.Render())
 }
