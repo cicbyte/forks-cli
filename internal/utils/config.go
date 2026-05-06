@@ -1,7 +1,5 @@
 package utils
 
-
-
 import (
 	"fmt"
 	"os"
@@ -43,7 +41,7 @@ func (c *Config) GetAppSeriesDir() string {
 	if c.AppSeriesDir != "" {
 		return c.AppSeriesDir
 	}
-	c.AppSeriesDir = c.GetHomeDir() + "/.ciclebyte"
+	c.AppSeriesDir = c.GetHomeDir() + "/.cicbyte"
 	return c.AppSeriesDir
 }
 

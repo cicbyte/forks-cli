@@ -17,3 +17,5 @@
 .cursor/
 .vscode/
 .claude/
+
+.reference/
