@@ -125,15 +125,6 @@ func (c *Config) SaveConfig(config *models.AppConfig) {
 func GetDefaultConfig() *models.AppConfig {
 	config := &models.AppConfig{}
 
-	// AI配置默认值
-	config.AI.Provider = "openai"
-	// 默认使用智谱AI的GLM-4-Flash-250414模型
-	config.AI.BaseURL = "https://open.bigmodel.cn/api/paas/v4/"
-	config.AI.Model = "GLM-4-Flash-250414"
-	config.AI.MaxTokens = 2048
-	config.AI.Temperature = 0.8
-	config.AI.Timeout = 30
-
 	// 日志默认配置
 	config.Log.Level = "info"
 	config.Log.MaxSize = 10
