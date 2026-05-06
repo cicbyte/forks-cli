@@ -5,8 +5,8 @@ import (
 	"strconv"
 
 	"github.com/cicbyte/forks-cli/internal/common"
+	"github.com/cicbyte/forks-cli/internal/output"
 	"github.com/cicbyte/forks-cli/internal/utils"
-	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 )
 
@@ -16,7 +16,8 @@ var listCmd = &cobra.Command{
 	Long: `列出所有配置项及当前值。敏感字段（token）会显示脱敏后的值。
 
 示例:
-  forks-cli config list`,
+  forks-cli config list
+  forks-cli config list --format json`,
 	Args: cobra.NoArgs,
 	Run:  runList,
 }
@@ -42,6 +43,44 @@ func runList(cmd *cobra.Command, args []string) {
 		{key: "log.compress", section: "Log", value: strconv.FormatBool(cfg.Log.Compress)},
 	}
 
+	if output.IsJSON() {
+		printConfigJSON(entries)
+		return
+	}
+
+	printConfigTable(entries)
+}
+
+func printConfigJSON(entries []configEntry) {
+	items := make([]map[string]any, 0, len(entries))
+	for _, e := range entries {
+		displayVal := e.value
+		if e.sensitive {
+			displayVal = maskValue(e.value)
+		}
+		if displayVal == "" {
+			displayVal = "(未设置)"
+		}
+		items = append(items, map[string]any{
+			"key":       e.key,
+			"value":     displayVal,
+			"section":   e.section,
+			"sensitive": e.sensitive,
+		})
+	}
+
+	if output.IsJSONL() {
+		output.PrintJSONL(items)
+		return
+	}
+
+	output.PrintJSON(map[string]any{
+		"config_file": utils.ConfigInstance.GetConfigPath(),
+		"items":       items,
+	})
+}
+
+func printConfigTable(entries []configEntry) {
 	headers := []string{"KEY", "VALUE"}
 	rows := make([][]string, 0, len(entries))
 	currentSection := ""
@@ -62,15 +101,6 @@ func runList(cmd *cobra.Command, args []string) {
 		rows = append(rows, []string{e.key, displayVal})
 	}
 
-	t := table.NewWriter()
-	t.SetStyle(table.StyleDefault)
-	t.Style().Options.DrawBorder = false
-	t.Style().Options.SeparateColumns = false
-	t.AppendHeader(table.Row{headers[0], headers[1]})
-	for _, row := range rows {
-		t.AppendRow(table.Row{row[0], row[1]})
-	}
-
 	fmt.Printf("配置文件: %s\n\n", utils.ConfigInstance.GetConfigPath())
-	fmt.Println(t.Render())
+	output.PrintTable(headers, rows)
 }

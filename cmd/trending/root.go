@@ -7,7 +7,7 @@ import (
 
 	"github.com/cicbyte/forks-cli/internal/common"
 	logictrending "github.com/cicbyte/forks-cli/internal/logic/trending"
-	"github.com/jedib0t/go-pretty/v6/table"
+	"github.com/cicbyte/forks-cli/internal/output"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +36,8 @@ func GetTrendingCommand() *cobra.Command {
   forks-cli trending -l python -s weekly      # Python 周趋势
   forks-cli trending -S zh                    # 中文趋势
   forks-cli trending -d 2026-05-04            # 查看历史趋势
-  forks-cli trending --refresh                # 刷新缓存`,
+  forks-cli trending --refresh                # 刷新缓存
+  forks-cli trending --format json            # JSON 格式输出`,
 		Args: cobra.NoArgs,
 		RunE: runTrending,
 	}
@@ -93,6 +94,42 @@ func runTrending(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
+	if output.IsJSON() {
+		printTrendingJSON(repos, date, config)
+		return nil
+	}
+
+	printTrendingTable(repos, date, config)
+	return nil
+}
+
+func printTrendingJSON(repos []logictrending.TrendingRepo, date string, config *logictrending.TrendingConfig) {
+	if output.IsJSONL() {
+		items := make([]map[string]any, 0, len(repos))
+		for _, r := range repos {
+			items = append(items, map[string]any{
+				"author":               r.Author,
+				"repo":                 r.Repo,
+				"url":                  r.URL,
+				"description":          r.Description,
+				"language":             r.Language,
+				"stars":                r.Stars,
+				"forks":                r.Forks,
+				"current_period_stars": r.CurrentPeriodStars,
+			})
+		}
+		output.PrintJSONL(items)
+		return
+	}
+
+	output.PrintJSON(map[string]any{
+		"date":  date,
+		"count": len(repos),
+		"items": repos,
+	})
+}
+
+func printTrendingTable(repos []logictrending.TrendingRepo, date string, config *logictrending.TrendingConfig) {
 	// 输出标题
 	sinceLabel := map[string]string{"daily": "今日", "weekly": "本周", "monthly": "本月"}
 	label := sinceLabel[config.Since]
@@ -106,12 +143,9 @@ func runTrending(cmd *cobra.Command, args []string) error {
 	fmt.Printf(" — %s\n", date)
 
 	// 构建表格
-	t := table.NewWriter()
-	t.SetStyle(table.StyleDefault)
-	t.Style().Options.DrawBorder = false
-	t.Style().Options.SeparateColumns = false
+	headers := []string{"#", "REPO", "DESCRIPTION", "LANG", "STARS", "TODAY"}
+	rows := make([][]string, 0, len(repos))
 
-	t.AppendHeader(table.Row{"#", "REPO", "DESCRIPTION", "LANG", "STARS", "TODAY"})
 	for i, repo := range repos {
 		desc := repo.Description
 		if len([]rune(desc)) > 50 {
@@ -124,8 +158,8 @@ func runTrending(cmd *cobra.Command, args []string) error {
 			today = fmt.Sprintf("+%s", formatNum(repo.CurrentPeriodStars))
 		}
 
-		t.AppendRow(table.Row{
-			i + 1,
+		rows = append(rows, []string{
+			fmt.Sprintf("%d", i+1),
 			fmt.Sprintf("%s/%s", repo.Author, repo.Repo),
 			desc,
 			repo.Language,
@@ -134,9 +168,8 @@ func runTrending(cmd *cobra.Command, args []string) error {
 		})
 	}
 
-	fmt.Println(t.Render())
+	output.PrintTable(headers, rows)
 	fmt.Printf("\n共 %d 个仓库\n", len(repos))
-	return nil
 }
 
 func formatNum(n int) string {

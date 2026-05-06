@@ -10,9 +10,12 @@ import (
 	"github.com/cicbyte/forks-cli/cmd/trending"
 	"github.com/cicbyte/forks-cli/internal/common"
 	"github.com/cicbyte/forks-cli/internal/log"
+	"github.com/cicbyte/forks-cli/internal/output"
 	"github.com/cicbyte/forks-cli/internal/utils"
 	"github.com/spf13/cobra"
 )
+
+var globalFormat string
 
 var rootCmd = &cobra.Command{
 	Use:   "forks-cli",
@@ -35,6 +38,13 @@ func init() {
 	}
 	// 加载配置(会自动创建默认配置)
 	common.AppConfigModel = utils.ConfigInstance.LoadConfig()
+
+	// 全局 flag
+	rootCmd.PersistentFlags().StringVar(&globalFormat, "format", "table", "输出格式 (table|json|jsonl)")
+	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		output.SetFormat(globalFormat)
+	}
+
 	// 初始化日志
 	if err := log.Init(utils.ConfigInstance.GetLogPath()); err != nil {
 		fmt.Printf("日志初始化失败: %v\n", err)
