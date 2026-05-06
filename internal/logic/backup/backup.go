@@ -164,16 +164,22 @@ func (p *BackupProcessor) Execute() error {
 				serverURL := fmt.Sprintf("%s/git/%s/%s/%s.git", task.server, repo.Source, repo.Author, repo.Repo)
 
 				if _, err := os.Stat(gitDir); err == nil {
-					// 已存在，pull
+					// 已存在，尝试 pull
 					if err := utils.RunGitInDirSilent(repoDir, "pull", "--ff-only"); err != nil {
-						results <- backupResult{index: task.index, action: "failed", repo: repoName, err: fmt.Errorf("pull 失败: %v", err)}
+						// pull 失败，清理后重新 clone
+						os.RemoveAll(repoDir)
+					} else {
+						results <- backupResult{index: task.index, action: "pulled", repo: repoName}
 						continue
 					}
-					results <- backupResult{index: task.index, action: "pulled", repo: repoName}
-					continue
 				}
 
-				// 不存在，clone
+				// 目录存在但不是有效 git 仓库，先清理
+				if _, err := os.Stat(repoDir); err == nil {
+					os.RemoveAll(repoDir)
+				}
+
+				// clone
 				parentDir := filepath.Dir(repoDir)
 				if err := os.MkdirAll(parentDir, 0755); err != nil {
 					results <- backupResult{index: task.index, action: "failed", repo: repoName, err: fmt.Errorf("创建目录失败: %v", err)}
