@@ -8,6 +8,7 @@ import (
 	"github.com/cicbyte/forks-cli/cmd/clone"
 	"github.com/cicbyte/forks-cli/cmd/configcmd"
 	"github.com/cicbyte/forks-cli/cmd/trending"
+	"github.com/cicbyte/forks-cli/cmd/website"
 	"github.com/cicbyte/forks-cli/internal/common"
 	"github.com/cicbyte/forks-cli/internal/log"
 	"github.com/cicbyte/forks-cli/internal/output"
@@ -56,6 +57,7 @@ func init() {
 	rootCmd.AddCommand(backup.GetBackupCommand())
 	rootCmd.AddCommand(configcmd.GetConfigCommand())
 	rootCmd.AddCommand(trending.GetTrendingCommand())
+	rootCmd.AddCommand(website.GetWebsiteCommand())
 
 	log.Info("初始化完成")
 }
