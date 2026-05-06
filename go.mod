@@ -1,6 +1,6 @@
 module github.com/cicbyte/forks-cli
 
-go 1.24.2
+go 1.25.0
 
 require (
 	github.com/charmbracelet/bubbles v1.0.0
@@ -9,6 +9,7 @@ require (
 	github.com/spf13/cobra v1.10.2
 	go.uber.org/zap v1.27.1
 	go.yaml.in/yaml/v3 v3.0.4
+	golang.org/x/term v0.42.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )
 
@@ -34,6 +35,6 @@ require (
 	github.com/spf13/pflag v1.0.9 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	go.uber.org/multierr v1.10.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/sys v0.43.0 // indirect
 	golang.org/x/text v0.3.8 // indirect
 )

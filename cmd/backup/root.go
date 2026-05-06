@@ -28,7 +28,7 @@ func GetBackupCommand() *cobra.Command {
 已存在的仓库执行 git pull --ff-only，不存在的仓库执行 git clone。
 
 使用前需先配置服务端地址:
-  forks-cli config server http://192.168.1.100:8080
+  forks-cli config set server http://192.168.1.100:8080
 
 Token 优先级: --token 参数 > FORKS_TOKEN 环境变量 > 配置文件`,
 		Args: cobra.NoArgs,
@@ -53,7 +53,7 @@ func runBackup(cmd *cobra.Command, args []string) error {
 	}
 
 	if server == "" {
-		return fmt.Errorf("请先配置服务端地址: forks-cli config server <url>")
+		return fmt.Errorf("请先配置服务端地址: forks-cli config set server <url>")
 	}
 
 	// token 优先级: 命令行 > 环境变量 > 配置文件

@@ -28,7 +28,7 @@ func GetCloneCommand() *cobra.Command {
   3) 简写:      author/repo 或 github/author/repo
 
 使用简写或原始 URL 时，需先配置镜像服务器:
-  forks-cli config server http://192.168.1.100:8080
+  forks-cli config set server http://192.168.1.100:8080
 
 Token 优先级: --token 参数 > FORKS_TOKEN 环境变量 > 配置文件`,
 		Args: cobra.MinimumNArgs(1),
