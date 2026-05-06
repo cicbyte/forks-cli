@@ -1,34 +1,13 @@
 package log
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/cicbyte/forks-cli/internal/common"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
-	"gorm.io/gorm/logger"
 )
 
 var Logger *zap.Logger
-
-type gormLoggerAdapter struct{}
-
-func (g *gormLoggerAdapter) Printf(format string, v ...interface{}) {
-	Logger.Info(fmt.Sprintf(format, v...))
-}
-
-func GetGormLogger() logger.Interface {
-	return logger.New(
-		&gormLoggerAdapter{},
-		logger.Config{
-			SlowThreshold: time.Second,
-			LogLevel:      logger.Warn,
-			Colorful:      false,
-		},
-	)
-}
 
 func Init(logPath string) error {
 	encoderConfig := zapcore.EncoderConfig{

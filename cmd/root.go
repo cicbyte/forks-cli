@@ -10,9 +10,7 @@ import (
 	"github.com/cicbyte/forks-cli/internal/common"
 	"github.com/cicbyte/forks-cli/internal/log"
 	"github.com/cicbyte/forks-cli/internal/utils"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -43,12 +41,5 @@ func init() {
 		os.Exit(1)
 	}
 
-	// 初始化数据库连接
-	if _, err := utils.GetGormDB(); err != nil {
-		log.Error("数据库连接失败",
-			zap.String("operation", "db init"),
-			zap.Error(err))
-		os.Exit(1)
-	}
-	log.Info("数据库连接成功")
+	log.Info("初始化完成")
 }

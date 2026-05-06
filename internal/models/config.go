@@ -12,15 +12,6 @@ type AppConfig struct {
 		Timeout     int     `yaml:"timeout"`
 	} `yaml:"ai"`
 
-	Database struct {
-		Type     string `yaml:"type"` // sqlite/mysql
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		User     string `yaml:"user"`
-		Password string `yaml:"password"`
-		DbName   string `yaml:"db_name"` // 数据库名
-	} `yaml:"database"`
-
 	Log struct {
 		Level      string `yaml:"level"`
 		MaxSize    int    `yaml:"maxSize"`

@@ -19,8 +19,6 @@ type Config struct {
 	AppDir       string
 	ConfigDir    string
 	ConfigPath   string
-	DbDir        string
-	DbPath       string
 	LogDir       string
 	LogPath      string
 }
@@ -60,29 +58,13 @@ func (c *Config) GetConfigDir() string {
 	c.ConfigDir = c.GetAppDir() + "/config"
 	return c.ConfigDir
 }
+
 func (c *Config) GetConfigPath() string {
 	if c.ConfigPath != "" {
 		return c.ConfigPath
 	}
 	c.ConfigPath = c.GetConfigDir() + "/config.yaml"
 	return c.ConfigPath
-}
-
-func (c *Config) GetDbDir() string {
-	if c.DbDir != "" {
-		return c.DbDir
-	}
-	dbDir := filepath.Join(c.GetAppDir(), "db")
-	c.DbDir = dbDir
-	return c.DbDir
-}
-
-func (c *Config) GetDbPath() string {
-	if c.DbPath != "" {
-		return c.DbPath
-	}
-	c.DbPath = filepath.Join(c.GetDbDir(), "app.db")
-	return c.DbPath
 }
 
 func (c *Config) GetLogDir() string {
@@ -151,14 +133,6 @@ func GetDefaultConfig() *models.AppConfig {
 	config.AI.MaxTokens = 2048
 	config.AI.Temperature = 0.8
 	config.AI.Timeout = 30
-
-	// 数据库默认配置
-	config.Database.Type = "sqlite"
-	config.Database.DbName = "dbName"
-	config.Database.Host = "localhost"
-	config.Database.Port = 3306
-	config.Database.User = "root"
-	config.Database.Password = "123456"
 
 	// 日志默认配置
 	config.Log.Level = "info"

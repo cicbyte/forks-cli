@@ -32,7 +32,6 @@ func InitAppDirs() error {
 		config.GetAppSeriesDir(),
 		config.GetAppDir(),
 		config.GetConfigDir(),
-		config.GetDbDir(),
 		config.GetLogDir(),
 	}
 
