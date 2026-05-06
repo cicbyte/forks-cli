@@ -1,19 +1,18 @@
-/*
-Copyright © 2025 NAME HERE <EMAIL ADDRESS>
-*/
 package cmd
 
 import (
 	"fmt"
 	"os"
 
+	"github.com/cicbyte/forks-cli/cmd/backup"
+	"github.com/cicbyte/forks-cli/cmd/clone"
+	"github.com/cicbyte/forks-cli/cmd/configcmd"
 	"github.com/cicbyte/forks-cli/internal/common"
 	"github.com/cicbyte/forks-cli/internal/log"
 	"github.com/cicbyte/forks-cli/internal/utils"
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "forks-cli",
 	Short: "forks-cli",
@@ -40,6 +39,11 @@ func init() {
 		fmt.Printf("日志初始化失败: %v\n", err)
 		os.Exit(1)
 	}
+
+	// 注册子命令
+	rootCmd.AddCommand(clone.GetCloneCommand())
+	rootCmd.AddCommand(backup.GetBackupCommand())
+	rootCmd.AddCommand(configcmd.GetConfigCommand())
 
 	log.Info("初始化完成")
 }
