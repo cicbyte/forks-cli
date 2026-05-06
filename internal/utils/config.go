@@ -39,7 +39,7 @@ func (c *Config) GetAppSeriesDir() string {
 	if c.AppSeriesDir != "" {
 		return c.AppSeriesDir
 	}
-	c.AppSeriesDir = c.GetHomeDir() + "/.cicbyte"
+	c.AppSeriesDir = filepath.Join(c.GetHomeDir(), ".cicbyte")
 	return c.AppSeriesDir
 }
 
@@ -47,7 +47,7 @@ func (c *Config) GetAppDir() string {
 	if c.AppDir != "" {
 		return c.AppDir
 	}
-	c.AppDir = c.GetAppSeriesDir() + "/forks-cli"
+	c.AppDir = filepath.Join(c.GetAppSeriesDir(), "forks-cli")
 	return c.AppDir
 }
 
@@ -55,7 +55,7 @@ func (c *Config) GetConfigDir() string {
 	if c.ConfigDir != "" {
 		return c.ConfigDir
 	}
-	c.ConfigDir = c.GetAppDir() + "/config"
+	c.ConfigDir = filepath.Join(c.GetAppDir(), "config")
 	return c.ConfigDir
 }
 
@@ -63,7 +63,7 @@ func (c *Config) GetConfigPath() string {
 	if c.ConfigPath != "" {
 		return c.ConfigPath
 	}
-	c.ConfigPath = c.GetConfigDir() + "/config.yaml"
+	c.ConfigPath = filepath.Join(c.GetConfigDir(), "config.yaml")
 	return c.ConfigPath
 }
 
