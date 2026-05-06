@@ -65,13 +65,13 @@ func runBackup(cmd *cobra.Command, args []string) error {
 		token = cfg.Token
 	}
 
-	// 备份目录优先级: 命令行 > 配置文件 > 默认值
+	// 备份目录优先级: 命令行 > 配置文件
 	dir := backupFlagDir
 	if dir == "" {
 		dir = cfg.BackupDir
 	}
 	if dir == "" {
-		dir = "./backup"
+		return fmt.Errorf("请指定备份目录: forks-cli backup -d /path/to/backup 或通过 config set backup_dir <path> 配置")
 	}
 
 	concurrency, _ := cmd.Flags().GetInt("concurrency")
